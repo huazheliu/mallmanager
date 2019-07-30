@@ -32,6 +32,7 @@
                 const {data,meta:{msg,status}}=res.data;
 
                 if(status===200){
+                    this.localStorage.setItem('token',data.token());
                     this.$message.success(msg);
                     this.$router.push({name:'home'});
                 }
