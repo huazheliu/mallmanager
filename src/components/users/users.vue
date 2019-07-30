@@ -14,33 +14,33 @@
         <el-button type="success">添加用户</el-button>
       </el-col>
     </el-row>
-    <el-table :data="tableData" style="width: 100%">
+    <el-table :data="userlist" style="width: 100%">
       <el-table-column
         type="index"
         label="#"
         width="60">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="username"
         label="姓名"
         width="80">
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="email"
         label="邮箱">
       </el-table-column>
       <el-table-column
-        prop="date"
+        prop="mobile"
         label="电话"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="create_time"
         label="创建日期"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="mg_state"
         label="用户状态">
       </el-table-column>
       <el-table-column
@@ -62,25 +62,8 @@
                 query: '',
                 pagenum:1,
                 pagesize:2,
-
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }],
-
+                userlist:[],
+                total:0,
             }
         },
         mounted() {
@@ -91,6 +74,14 @@
                 this.$http.defaults.headers.common['Authorization'] = localStorage.getItem('token');
                 const res=await this.$http.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
                 console.log(res);
+                const {meta:{msg,status},data:{total,users}}=res.data;
+                if(status===200){
+                    this.userlist=users;
+                    this.total=total;
+                    this.message.success(msg);
+                }else {
+                    this.message.warning(msg);
+                }
             }
         }
     }
