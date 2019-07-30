@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="2">
           <div class="grid-content bg-purple">
-            <a class="quit" href="#">退出</a>
+            <a class="quit" href="#" @click="loginout">退出</a>
           </div>
         </el-col>
       </el-row>
@@ -99,6 +99,13 @@
             const token=localStorage.getItem('token');
             if(!token){
               this.$router.push({name:'login'});
+            }
+        },
+        methods:{
+            loginout(){
+                localStorage.clear();
+                this.$message.success("退出成功");
+                this.$router.push({name:'login'});
             }
         }
     }
