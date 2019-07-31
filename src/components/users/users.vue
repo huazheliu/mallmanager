@@ -1,5 +1,4 @@
 <template>
-
   <el-card class="box-card">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -11,7 +10,7 @@
         <el-input placeholder="请输入内容" v-model="query" class="inputSearch" clearable @clear="getUserList">
           <el-button slot="append" icon="el-icon-search" @click="searchUser()"></el-button>
         </el-input>
-        <el-button type="success">添加用户</el-button>
+        <el-button type="success" @click="showAddUserDia()">添加用户</el-button>
       </el-col>
     </el-row>
     <el-table :data="userlist" style="width: 100%">
@@ -68,8 +67,31 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
-  </el-card>
 
+
+    <!--添加用户对话框-->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" label-width="100px">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </div>
+    </el-dialog>
+  </el-card>
 </template>
 
 <script>
@@ -82,7 +104,14 @@
                 pagesize:2,
                 userlist:[],
                 total:0,
-            }
+                form: {
+                    username: '',
+                    password:'',
+                    email:'',
+                    mobile:'',
+                },
+                dialogFormVisibleAdd: false,
+            };
         },
         mounted() {
             this.getUserList();
@@ -115,6 +144,22 @@
             searchUser(){
                 this.getUserList();
             },
+            showAddUserDia(){
+                this.dialogFormVisibleAdd=true;
+            },
+            async addUser(){
+                const res = await this.$http.post(`users`,this.form);
+                const {meta:{status,msg},data}=res.data;
+                if(status===201){
+                    this.$message.success(msg);
+                    this.dialogFormVisibleAdd=false;
+                    this.getUserList();
+                    this.form={};
+                }else{
+                    this.$message.warning(msg);
+                }
+                console.log(res);
+            }
         }
     }
 </script>
