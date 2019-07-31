@@ -9,7 +9,7 @@
         </el-col>
         <el-col :span="18" class="title">
           <div class="grid-content bg-purple-light">
-            <h2>电商管理系统</h2>
+            <h2>电商后台管理系统</h2>
           </div>
         </el-col>
         <el-col :span="2">

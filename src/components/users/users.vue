@@ -8,8 +8,8 @@
     </el-breadcrumb>
     <el-row class="searchRow">
       <el-col>
-        <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入内容" v-model="query" class="inputSearch" clearable @clear="getUserList">
+          <el-button slot="append" icon="el-icon-search" @click="searchUser()"></el-button>
         </el-input>
         <el-button type="success">添加用户</el-button>
       </el-col>
@@ -35,21 +35,39 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="create_time"
         label="创建日期"
         width="180">
+        <template slot-scope="scope">
+          {{scope.row.create_time | fmtdate}}
+        </template>
       </el-table-column>
       <el-table-column
-        prop="mg_state"
         label="用户状态">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+          </el-switch>
+        </template>
       </el-table-column>
       <el-table-column
         prop="date"
         label="操作"
         width="180">
+        <template slot-scope="scope">
+          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+        </template>
       </el-table-column>
-
     </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[2, 4, 6, 8]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </el-card>
 
 </template>
@@ -78,11 +96,25 @@
                 if(status===200){
                     this.userlist=users;
                     this.total=total;
-                    this.message.success(msg);
+                    this.$message.success(msg);
                 }else {
-                    this.message.warning(msg);
+                    this.$message.warning(msg);
                 }
-            }
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pagesize=val;
+                this.pagenum=1;
+                this.getUserList();
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.pagenum=val;
+                this.getUserList();
+            },
+            searchUser(){
+                this.getUserList();
+            },
         }
     }
 </script>
