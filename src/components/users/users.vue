@@ -13,7 +13,7 @@
         <el-button type="success" @click="showAddUserDia()">添加用户</el-button>
       </el-col>
     </el-row>
-    <el-table :data="userlist" style="width: 100%">
+    <el-table :data="userlist" style="width: 100%" height="300px">
       <el-table-column
         type="index"
         label="#"
@@ -52,9 +52,9 @@
         label="操作"
         width="180">
         <template slot-scope="scope">
-          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle @click="showEditUserDia(scope.row)"></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDeleUserDia(scope.row.id)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -84,13 +84,33 @@
         <el-form-item label="电话" label-width="100px">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
         <el-button type="primary" @click="addUser">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!--编辑用户对话框-->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
   </el-card>
 </template>
 
@@ -111,6 +131,7 @@
                     mobile:'',
                 },
                 dialogFormVisibleAdd: false,
+                dialogFormVisibleEdit: false,
             };
         },
         mounted() {
@@ -145,6 +166,7 @@
                 this.getUserList();
             },
             showAddUserDia(){
+                this.form={};
                 this.dialogFormVisibleAdd=true;
             },
             async addUser(){
@@ -159,6 +181,38 @@
                     this.$message.warning(msg);
                 }
                 console.log(res);
+            },
+            showDeleUserDia(userId){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then( async () => {
+                    const res = await this.$http.delete(`users/${userId}`);
+                    console.log(res);
+                    const {meta:{msg,status}}=res.data;
+                    if(status===200){
+                        this.$message.success(msg);
+                        this.pagenum=1;
+                        this.getUserList();
+                    }
+                }).catch(() => {
+                    this.$message.info('已取消删除');
+                });
+
+            },
+            showEditUserDia(user){
+                this.dialogFormVisibleEdit=true;
+                this.form=user;
+            },
+            async editUser(){
+                const res=await this.$http.put(`users/${this.form.id}`,this.form);
+                if(res.data.meta.status===200){
+                    this.dialogFormVisibleEdit=false;
+                    this.getUserList();
+                    this.$message.success(res.data.meta.msg);
+                }
             }
         }
     }
