@@ -43,7 +43,7 @@
       <el-table-column
         label="用户状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="changeUserStatus(scope.row)">
           </el-switch>
         </template>
       </el-table-column>
@@ -62,7 +62,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pagenum"
-      :page-sizes="[2, 4, 6, 8]"
+      :page-sizes="[4, 6, 8,10]"
       :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
@@ -121,7 +121,7 @@
             return {
                 query: '',
                 pagenum:1,
-                pagesize:2,
+                pagesize:4,
                 userlist:[],
                 total:0,
                 form: {
@@ -212,6 +212,13 @@
                     this.dialogFormVisibleEdit=false;
                     this.getUserList();
                     this.$message.success(res.data.meta.msg);
+                }
+            },
+            async changeUserStatus(user){
+                const res=await this.$http.put(`users/${user.id}/state/${user.mg_state}`);
+                if(res.data.meta.status===200){
+                    this.$message.success(res.data.meta.msg);
+                    this.getUserList();
                 }
             }
         }
