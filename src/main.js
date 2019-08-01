@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import moment from "moment";
+import MyBread from "./components/cuscom/myBread";
 
 //导入并使用element插件，不要忘记引入样式文件
 import ElementUI from 'element-ui';
@@ -25,7 +26,12 @@ Vue.config.productionTip = false;
 Vue.filter('fmtdate',(v)=>{
     return moment(v).format('YYYY-MM-DD');
 });
+
+//全局自定义组件
+Vue.component(MyBread.name,MyBread);
 /* eslint-disable no-new */
+
+
 new Vue({
   el: '#app',
   router,
