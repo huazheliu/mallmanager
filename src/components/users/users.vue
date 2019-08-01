@@ -164,9 +164,8 @@
         },
         methods: {
             async getUserList() {
-                this.$http.defaults.headers.common['Authorization'] = localStorage.getItem('token');
                 const res = await this.$http.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
-                console.log(res);
+                //console.log(res);
                 const {meta: {msg, status}, data: {total, users}} = res.data;
                 if (status === 200) {
                     this.userlist = users;
@@ -205,7 +204,7 @@
                 } else {
                     this.$message.warning(msg);
                 }
-                console.log(res);
+               // console.log(res);
             },
             showDeleUserDia(userId) {
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -215,7 +214,7 @@
                     center: true
                 }).then(async () => {
                     const res = await this.$http.delete(`users/${userId}`);
-                    console.log(res);
+                    //console.log(res);
                     const {meta: {msg, status}} = res.data;
                     if (status === 200) {
                         this.$message.success(msg);

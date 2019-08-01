@@ -6,7 +6,22 @@
 
 <script>
     export default {
-        name: "right"
+        name: "right",
+        data(){
+            return{
+                rightlist:[],
+            }
+        },
+        created() {
+            this.getRightList();
+        },
+        methods:{
+            async getRightList(){
+                const res=await this.$http.get(`rights/list`);
+                //console.log(res);
+                this.rightlist=res.data.data;
+            }
+        },
     }
 </script>
 
