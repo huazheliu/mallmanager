@@ -46,12 +46,29 @@
           <el-button size="mini" plain type="primary" icon="el-icon-edit" circle
                      @click="showEditUserDia(scope.row)"></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle
-                     @click="showSetUserRoleDia(scope.row)"></el-button>
+                     @click="showSetRightDia(scope.row)"></el-button>
           <el-button size="mini" plain type="danger" icon="el-icon-delete" circle
                      @click="showDeleUserDia(scope.row.id)"></el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!--修改权限对话框-->
+    <el-dialog title="修改权限" :visible.sync="dialogFormVisibleRight">
+      <el-tree
+        :data="treelist"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :default-checked-keys="arrcheck"
+        :props="defaultProps">
+      </el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </el-card>
 </template>
 
@@ -61,6 +78,14 @@
         data() {
             return {
                 rolelist: [],
+                dialogFormVisibleRight: false,
+                treelist: [],
+                defaultProps: {
+                    label: 'authName',
+                    children: 'children'
+                },
+                arrexpand: [],
+                arrcheck: [],
             }
         },
         created() {
@@ -76,6 +101,27 @@
                 const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`);
                 //console.log(res);
                 role.children = res.data.data
+            },
+            async showSetRightDia(role) {
+
+                this.dialogFormVisibleRight = true;
+
+                const res = await this.$http.get(`rights/tree`);
+
+                this.treelist = res.data.data;
+
+                const arrtemp = [];
+
+                role.children.forEach(item1 => {
+                    //arrtemp.push(item1.id);
+                    item1.children.forEach(item2 => {
+                        //arrtemp.push(item2.id);
+                        item2.children.forEach(item3 => {
+                            arrtemp.push(item3.id);
+                        })
+                    })
+                });
+                this.arrcheck = arrtemp;
             }
         },
     }
