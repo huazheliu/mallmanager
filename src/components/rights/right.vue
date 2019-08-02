@@ -8,7 +8,7 @@
       :data="rightlist"
       border
       style="width: 100%;">
-      <el-table-column type="index" prop="date" label="#" width="180"></el-table-column>
+      <el-table-column type="index" label="#" width="180"></el-table-column>
       <el-table-column prop="authName" label="权限名称" width="180"></el-table-column>
       <el-table-column prop="path" label="路径"></el-table-column>
       <el-table-column prop="level" label="层级">
