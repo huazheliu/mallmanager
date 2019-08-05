@@ -100,13 +100,13 @@
                 this.rolelist = res.data.data;
             },
             async deleRight(role, rightId) {
-                const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`);
+                const res = await this.$http.delete(`roles/${roles.id}/rights/${rightId}`);
                 //console.log(res);
-                role.children = res.data.data
+                roles.children = res.data.data
             },
             async showSetRightDia(role) {
 
-                this.currentRoleId=role.id;
+                this.currentRoleId=roles.id;
 
                 this.dialogFormVisibleRight = true;
 
@@ -116,7 +116,7 @@
 
                 const arrtemp = [];
 
-                role.children.forEach(item1 => {
+                roles.children.forEach(item1 => {
                     //arrtemp.push(item1.id);
                     item1.children.forEach(item2 => {
                         //arrtemp.push(item2.id);
