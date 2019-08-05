@@ -56,6 +56,7 @@
     <!--修改权限对话框-->
     <el-dialog title="修改权限" :visible.sync="dialogFormVisibleRight">
       <el-tree
+        ref="tree"
         :data="treelist"
         show-checkbox
         node-key="id"
@@ -65,7 +66,7 @@
       </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRight = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleRight = false">确 定</el-button>
+        <el-button type="primary" @click="setRoleRight()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -86,6 +87,7 @@
                 },
                 arrexpand: [],
                 arrcheck: [],
+                currentRoleId:-1,
             }
         },
         created() {
@@ -103,6 +105,8 @@
                 role.children = res.data.data
             },
             async showSetRightDia(role) {
+
+                this.currentRoleId=role.id;
 
                 this.dialogFormVisibleRight = true;
 
@@ -122,6 +126,20 @@
                     })
                 });
                 this.arrcheck = arrtemp;
+            },
+            async setRoleRight(){
+                const arr1=this.$refs.tree.getCheckedKeys();
+
+                const arr2=this.$refs.tree.getHalfCheckedKeys();
+
+                const arr=[...arr1,...arr2];
+
+                const res=await this.$http.post(`roles/${this.currentRoleId}/rights`,{rids:arr.join(',')});
+
+                this.getRoleList();
+
+                this.dialogFormVisibleRight = false
+
             }
         },
     }
